@@ -28,3 +28,8 @@ def editar_cliente(request,id):
     else:
         form = ClienteForm(instance=cliente)
     return render(request,'clientes/editar.html',{'form':form})
+
+def eliminar_cliente(request,id):
+    cliente = Cliente.objects.get(id=id)
+    cliente.delete()
+    return redirect('/clientes/')
