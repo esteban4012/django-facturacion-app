@@ -29,5 +29,7 @@ def editar_producto(request,id):
         form = ProductoForm(instance=producto)
     return render(request,'productos/editar.html',{'form':form})
 
-
-
+def eliminar_producto(request,id):
+    producto = Producto.objects.get(id=id)
+    producto.delete()
+    return redirect('/productos/')
