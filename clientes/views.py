@@ -17,3 +17,14 @@ def crear_cliente(request):
     return render(request,'clientes/crear.html',{'form':form})
         
 
+def editar_cliente(request,id):
+    cliente = Cliente.objects.get(id=id)
+    
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            return redirect('/clientes/')
+    else:
+        form = ClienteForm(instance=cliente)
+    return render(request,'clientes/editar.html',{'form':form})
