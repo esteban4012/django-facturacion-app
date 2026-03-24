@@ -18,3 +18,16 @@ def crear_producto(request):
         form = ProductoForm()
     return render(request,'productos/crear.html', {'form':form})
 
+def editar_producto(request,id):
+    producto = Producto.objects.get(id=id)
+    if request.method == 'POST':
+        form = ProductoForm(request.POST, instance=producto)
+        if form.is_valid():
+            form.save()
+            return redirect('/productos/')
+    else:
+        form = ProductoForm(instance=producto)
+    return render(request,'productos/editar.html',{'form':form})
+
+
+
