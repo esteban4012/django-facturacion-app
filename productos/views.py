@@ -8,4 +8,13 @@ def lista_producto(request):
 
 
 
+def crear_producto(request):
+    if request.method == 'POST':
+        form = ProductoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/productos/')
+    else:
+        form = ProductoForm()
+    return render(request,'productos/crear.html', {'form':form})
 
