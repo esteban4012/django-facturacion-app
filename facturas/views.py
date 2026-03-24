@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from .models import Factura, DetalleFactura
 from .forms import FacturaForm
 from productos.models import Producto
+from django.contrib import messages
 
 
 def lista_factura(request):
@@ -29,6 +30,8 @@ def detalle_factura(request, id):
         'productos': productos
     })
 
+
+
 def agregar_producto(request, id):
     if request.method == 'POST':
         factura = Factura.objects.get(id=id)
@@ -37,10 +40,22 @@ def agregar_producto(request, id):
 
         producto = Producto.objects.get(id=producto_id)
 
+        # 🔥 VALIDACIÓN DE STOCK
+        if producto.stock < cantidad:
+            messages.error(request, "No hay suficiente stock")
+            return redirect(f'/facturas/{id}/')
+
+        # 🔥 DESCONTAR STOCK
+        producto.stock -= cantidad
+        producto.save()
+
+        # 🔥 CREAR DETALLE
         DetalleFactura.objects.create(
             factura=factura,
             producto=producto,
             cantidad=cantidad
         )
+
+        messages.success(request, "Producto agregado correctamente")
 
     return redirect(f'/facturas/{id}/')
