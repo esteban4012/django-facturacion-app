@@ -1,0 +1,34 @@
+<h1>Factura #{{ factura.id }}</h1>
+
+<p><strong>Cliente:</strong> {{ factura.cliente.nombre }}</p>
+<p><strong>Total:</strong> {{ factura.total }}</p>
+
+<hr>
+
+<h2>Agregar producto</h2>
+
+<form method="POST" action="/facturas/{{ factura.id }}/agregar/">
+    {% csrf_token %}
+    
+    <select name="producto">
+        {% for p in productos %}
+            <option value="{{ p.id }}">{{ p.nombre }} - {{ p.precio }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="number" name="cantidad" placeholder="Cantidad" required>
+
+    <button>Agregar</button>
+</form>
+
+<hr>
+
+<h2>Detalle</h2>
+
+<ul>
+{% for d in detalles %}
+    <li>
+        {{ d.producto.nombre }} - {{ d.cantidad }} - {{ d.subtotal }}
+    </li>
+{% endfor %}
+</ul>
