@@ -8,10 +8,21 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 
 
+
+def login_requerido_con_mensaje(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.warning(request, "Debes iniciar sesión para acceder a esta sección")
+            return redirect('login')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+@login_requerido_con_mensaje
 def lista_factura(request):
     facturas = Factura.objects.all()
     return render(request,'facturas/lista.html' ,{'facturas': facturas})
 
+@login_requerido_con_mensaje
 def crear_factura(request):
     if request.method == 'POST':
         form = FacturaForm(request.POST)
@@ -22,6 +33,7 @@ def crear_factura(request):
         form = FacturaForm()
     return render(request,'facturas/crear.html',{'form':form})
 
+@login_requerido_con_mensaje
 def detalle_factura(request, id):
     factura = Factura.objects.get(id=id)
     detalles = factura.detallefactura_set.all()
@@ -34,7 +46,7 @@ def detalle_factura(request, id):
     })
 
 
-
+@login_requerido_con_mensaje
 def agregar_producto(request, id):
     if request.method == 'POST':
         factura = Factura.objects.get(id=id)
@@ -62,7 +74,6 @@ def agregar_producto(request, id):
         messages.success(request, "Producto agregado correctamente")
 
     return redirect(f'/facturas/{id}/')
-
 
 
 def factura_pdf(request, id):
@@ -94,11 +105,13 @@ def factura_pdf(request, id):
     return response
 
 
+@login_requerido_con_mensaje
 def eliminar_factura(request, id):
     factura = get_object_or_404(Factura, id=id)
     factura.delete()
     return redirect('lista_facturas')
 
+@login_requerido_con_mensaje
 def eliminar_detalle(request, id):
     detalle = get_object_or_404(DetalleFactura, id=id)
     producto = detalle.producto
@@ -114,3 +127,4 @@ def eliminar_detalle(request, id):
     factura.total = total
     factura.save()
     return redirect('detalle_factura', id=factura.id)
+
