@@ -19,15 +19,17 @@
     </thead>
 
     <tbody>
-        {% for f in factura %}
+        {% for f in facturas %}
         <tr>
             <td>{{ f.id }}</td>
             <td>{{ f.cliente.nombre }}</td>
             <td>${{ f.total }}</td>
             <td>
-                <a href="/facturas/{{ f.id }}/" class="btn btn-sm btn-info">
-                    Ver
-                </a>
+                <a href="/facturas/{{ f.id }}/" class="btn btn-sm btn-info">Ver</a>
+                <a href="{% url 'eliminar_factura' f.id %}" 
+                class="btn btn-danger btn-sm"
+                onclick="return confirm('¿Seguro que quieres eliminar esta factura?')">
+                Eliminar</a>
             </td>
         </tr>
         {% endfor %}

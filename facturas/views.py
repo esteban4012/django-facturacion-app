@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import get_object_or_404, render,redirect
 from .models import Factura, DetalleFactura
 from .forms import FacturaForm
 from productos.models import Producto
@@ -9,8 +9,8 @@ from reportlab.lib.styles import getSampleStyleSheet
 
 
 def lista_factura(request):
-    factura = Factura.objects.all()
-    return render(request,'facturas/lista.html' ,{'factura': factura})
+    facturas = Factura.objects.all()
+    return render(request,'facturas/lista.html' ,{'facturas': facturas})
 
 def crear_factura(request):
     if request.method == 'POST':
@@ -92,3 +92,9 @@ def factura_pdf(request, id):
     doc.build(contenido)
 
     return response
+
+
+def eliminar_factura(request, id):
+    factura = get_object_or_404(Factura, id=id)
+    factura.delete()
+    return redirect('lista_facturas')
