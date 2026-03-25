@@ -98,3 +98,19 @@ def eliminar_factura(request, id):
     factura = get_object_or_404(Factura, id=id)
     factura.delete()
     return redirect('lista_facturas')
+
+def eliminar_detalle(request, id):
+    detalle = get_object_or_404(DetalleFactura, id=id)
+    producto = detalle.producto
+    factura = detalle.factura
+    producto.stock += detalle.cantidad
+    producto.save()
+    detalle.delete()
+    total = 0
+    detalles = factura.detallefactura_set.all()
+
+    for d in detalles:
+        total += d.subtotal
+    factura.total = total
+    factura.save()
+    return redirect('detalle_factura', id=factura.id)

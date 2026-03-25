@@ -2,105 +2,6 @@
 
 {% block content %}
 
-{% comment %} {% if messages %}
-    {% for message in messages %}
-        <p>{{ message }}</p>
-    {% endfor %}
-{% endif %}
-<h1>Factura #{{ factura.id }}</h1>
-
-<p><strong>Cliente:</strong> {{ factura.cliente.nombre }}</p>
-<p><strong>Total:</strong> {{ factura.total }}</p>
-
-<hr>
-
-<h2>Agregar producto</h2>
-
-<form method="POST" action="/facturas/{{ factura.id }}/agregar/">
-    {% csrf_token %}
-    
-    <select name="producto">
-        {% for p in productos %}
-            <option value="{{ p.id }}">{{ p.nombre }} - {{ p.precio }}</option>
-        {% endfor %}
-    </select>
-
-    <input type="number" name="cantidad" placeholder="Cantidad" required>
-
-    <button>Agregar</button>
-</form>
-
-<hr>
-
-<h2>Detalle</h2>
-
-<ul>
-{% for d in detalles %}
-    <li>
-        {{ d.producto.nombre }} - {{ d.cantidad }} - {{ d.subtotal }}
-    </li>
-{% endfor %}
-</ul> {% endcomment %}
-
-
-{% comment %} ************************* {% endcomment %}
-
-
-
-
-{% comment %} <h1>Factura #{{ factura.id }}</h1>
-
-<p><strong>Cliente:</strong> {{ factura.cliente.nombre }}</p>
-<p><strong>Fecha:</strong> {{ factura.fecha }}</p>
-
-<hr>
-
-<h2>Detalle</h2>
-
-<table border="1">
-    <tr>
-        <th>Producto</th>
-        <th>Cantidad</th>
-        <th>Precio</th>
-        <th>Subtotal</th>
-    </tr>
-
-    {% for d in detalles %}
-    <tr>
-        <td>{{ d.producto.nombre }}</td>
-        <td>{{ d.cantidad }}</td>
-        <td>{{ d.producto.precio }}</td>
-        <td>{{ d.subtotal }}</td>
-    </tr>
-    {% endfor %}
-</table>
-
-<h3>Total: {{ factura.total }}</h3>
-
-<hr>
-
-<h2>Agregar producto</h2>
-
-<form method="POST" action="/facturas/{{ factura.id }}/agregar/">
-    {% csrf_token %}
-    
-    <select name="producto">
-        {% for p in productos %}
-            <option value="{{ p.id }}">{{ p.nombre }} - {{ p.precio }}</option>
-        {% endfor %}
-    </select>
-
-    <input type="number" name="cantidad" placeholder="Cantidad" required>
-
-    <button>Agregar</button>
-</form>
-
-<br>
-
-<a href="/facturas/{{ factura.id }}/pdf/">Descargar PDF</a> {% endcomment %}
-
-
-
 <h2 class="mb-3">Factura #{{ factura.id }}</h2>
 
 <div class="card mb-3">
@@ -133,6 +34,7 @@
                 <th>Cantidad</th>
                 <th>Precio</th>
                 <th>Subtotal</th>
+                <th>Acciones</th>
             </tr>
         </thead>
 
@@ -143,6 +45,11 @@
                 <td>{{ d.cantidad }}</td>
                 <td>${{ d.producto.precio }}</td>
                 <td>${{ d.subtotal }}</td>
+                <td>
+                <a href="{% url 'eliminar_detalle' d.id %}" 
+                class="btn btn-danger btn-sm"
+                onclick="return confirm('¿Eliminar este producto?')">
+                Eliminar</a>
             </tr>
             {% endfor %}
         </tbody>
