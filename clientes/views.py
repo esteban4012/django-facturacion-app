@@ -6,8 +6,21 @@ from facturas.views import login_requerido_con_mensaje
 
 @login_requerido_con_mensaje
 def lista_clientes(request):
+    query = request.GET.get('q')
+
     clientes = Cliente.objects.all()
-    return render(request, "clientes/lista.html", {"clientes":clientes})
+
+    if query:
+        clientes = clientes.filter(
+            nombre__icontains=query
+        ) | clientes.filter(
+            id__icontains=query
+        )
+
+    return render(request, 'clientes/lista.html', {
+        'clientes': clientes
+    })
+
 
 
 @login_requerido_con_mensaje

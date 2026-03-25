@@ -6,8 +6,20 @@ from facturas.views import login_requerido_con_mensaje
 
 @login_requerido_con_mensaje
 def lista_producto(request):
-    producto = Producto.objects.all()
-    return render(request,'productos/lista.html', {'productos': producto})
+    query = request.GET.get('q')
+
+    productos = Producto.objects.all()
+
+    if query:
+        productos = productos.filter(
+            nombre__icontains=query
+        ) | productos.filter(
+            id__icontains=query
+        )
+
+    return render(request, 'productos/lista.html', {
+        'productos': productos
+    })
 
 
 @login_requerido_con_mensaje

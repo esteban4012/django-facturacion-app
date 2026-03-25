@@ -15,12 +15,27 @@
         ➕ Crear Producto
     </a>
 </div>
+    <form method="GET" class="mb-3">
+    <div class="input-group">
 
+        <input 
+            type="text" 
+            name="q" 
+            class="form-control" 
+            placeholder="Buscar Producto por nombre"
+            value="{{ request.GET.q }}"
+        >
+
+        <button class="btn btn-dark">
+            🔍 Buscar
+        </button>
+
+    </div>
+</form>
 <div class="card shadow">
     <div class="card-header bg-dark text-white">
         Lista de Productos
     </div>
-
     <div class="card-body p-0">
 
         {% if productos %}

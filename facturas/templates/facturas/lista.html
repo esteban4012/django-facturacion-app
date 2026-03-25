@@ -7,6 +7,23 @@
 <a href="/facturas/crear/" class="btn btn-primary mb-3">
     Crear Factura
 </a>
+<form method="GET" class="mb-3">
+    <div class="input-group">
+
+        <input 
+            type="text" 
+            name="q" 
+            class="form-control" 
+            placeholder="Buscar Factura por nombre del cliente"
+            value="{{ request.GET.q }}"
+        >
+
+        <button class="btn btn-dark">
+            🔍 Buscar
+        </button>
+
+    </div>
+</form>
 
 <table class="table table-bordered">
     <thead class="table-dark">

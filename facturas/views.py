@@ -19,8 +19,21 @@ def login_requerido_con_mensaje(view_func):
 
 @login_requerido_con_mensaje
 def lista_factura(request):
+    query = request.GET.get('q')
+
     facturas = Factura.objects.all()
-    return render(request,'facturas/lista.html' ,{'facturas': facturas})
+
+    if query:
+        facturas = facturas.filter(
+            id__icontains=query
+        ) | facturas.filter(
+            cliente__nombre__icontains=query
+        )
+
+    return render(request, 'facturas/lista.html', {
+        'facturas': facturas
+    })
+    
 
 @login_requerido_con_mensaje
 def crear_factura(request):
