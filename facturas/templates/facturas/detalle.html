@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 {% comment %} {% if messages %}
     {% for message in messages %}
         <p>{{ message }}</p>
@@ -38,7 +42,13 @@
 {% endfor %}
 </ul> {% endcomment %}
 
-<h1>Factura #{{ factura.id }}</h1>
+
+{% comment %} ************************* {% endcomment %}
+
+
+
+
+{% comment %} <h1>Factura #{{ factura.id }}</h1>
 
 <p><strong>Cliente:</strong> {{ factura.cliente.nombre }}</p>
 <p><strong>Fecha:</strong> {{ factura.fecha }}</p>
@@ -87,4 +97,94 @@
 
 <br>
 
-<a href="/facturas/{{ factura.id }}/pdf/">Descargar PDF</a>
+<a href="/facturas/{{ factura.id }}/pdf/">Descargar PDF</a> {% endcomment %}
+
+
+
+<h2 class="mb-3">Factura #{{ factura.id }}</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p><strong>Cliente:</strong> {{ factura.cliente.nombre }}</p>
+        <p><strong>Fecha:</strong> {{ factura.fecha }}</p>
+        <h4 class="text-success">Total: ${{ factura.total }}</h4>
+    </div>
+</div>
+
+<!-- MENSAJES -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-info">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- TABLA -->
+<div class="card mb-4">
+    <div class="card-header bg-dark text-white">
+        Detalle de productos
+    </div>
+
+    <table class="table table-striped mb-0">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for d in detalles %}
+            <tr>
+                <td>{{ d.producto.nombre }}</td>
+                <td>{{ d.cantidad }}</td>
+                <td>${{ d.producto.precio }}</td>
+                <td>${{ d.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- FORMULARIO -->
+<div class="card">
+    <div class="card-header">
+        Agregar producto
+    </div>
+
+    <div class="card-body">
+        <form method="POST" action="/facturas/{{ factura.id }}/agregar/" class="row g-3">
+            {% csrf_token %}
+
+            <div class="col-md-6">
+                <select name="producto" class="form-select">
+                    {% for p in productos %}
+                        <option value="{{ p.id }}">
+                            {{ p.nombre }} - ${{ p.precio }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <input type="number" name="cantidad" class="form-control" placeholder="Cantidad" required>
+            </div>
+
+            <div class="col-md-3">
+                <button class="btn btn-success w-100">Agregar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- BOTÓN PDF -->
+<div class="mt-3">
+    <a href="/facturas/{{ factura.id }}/pdf/" class="btn btn-danger">
+        Descargar PDF
+    </a>
+</div>
+
+{% endblock %}

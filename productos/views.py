@@ -4,7 +4,7 @@ from .forms import ProductoForm
 
 def lista_producto(request):
     producto = Producto.objects.all()
-    return render(request,'productos/lista.html', {'producto': producto})
+    return render(request,'productos/lista.html', {'productos': producto})
 
 
 

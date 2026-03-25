@@ -1,8 +1,38 @@
+{% extends 'base.html' %}
 
-<h1>Crear Factura</h1>
+{% block content %}
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button>Guardar</button>
-</form>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Crear Factura</h4>
+            </div>
+
+            <div class="card-body">
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Cliente</label>
+                        {{ form.cliente }}
+                    </div>
+
+                    <div class="d-grid">
+                        <button class="btn btn-success">
+                            Guardar Factura
+                        </button>
+                        <a href="/facturas/" class="btn btn-secondary mt-2">Volver</a>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

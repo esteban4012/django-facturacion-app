@@ -1,12 +1,37 @@
-<h1>Facturas</h1>
+{% extends 'base.html' %}
 
-<a href="/facturas/crear/">Crear factura</a>
+{% block content %}
 
-<ul>
-{% for factura in factura %}
-    <li>
-        Factura #{{ factura.id }} - {{ factura.cliente.nombre }} - {{ factura.total }}
-    </li>
-{% endfor %}
-</ul>
+<h2>Facturas</h2>
 
+<a href="/facturas/crear/" class="btn btn-primary mb-3">
+    Crear Factura
+</a>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for f in factura %}
+        <tr>
+            <td>{{ f.id }}</td>
+            <td>{{ f.cliente.nombre }}</td>
+            <td>${{ f.total }}</td>
+            <td>
+                <a href="/facturas/{{ f.id }}/" class="btn btn-sm btn-info">
+                    Ver
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
