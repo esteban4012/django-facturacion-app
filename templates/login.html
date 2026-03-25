@@ -2,28 +2,60 @@
 
 {% block content %}
 
-<div class="row justify-content-center">
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+
     <div class="col-md-4">
 
-        <div class="card shadow">
+        <div class="card shadow border-0">
+            
+            
             <div class="card-header bg-dark text-white text-center">
-                <h4>Iniciar Sesión</h4>
+                <h4 class="mb-0">🔐 Iniciar Sesión</h4>
             </div>
 
-            <div class="card-body">
+            <div class="card-body p-4">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-warning text-center">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if form.errors %}
+                    <div class="alert alert-danger text-center">
+                        Usuario o contraseña incorrectos
+                    </div>
+                {% endif %}
+
                 <form method="POST">
                     {% csrf_token %}
-                    
-                    {{ form.as_p }}
+                    <div class="mb-3">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" name="username" class="form-control" placeholder="Ingresa tu usuario" required>
+                    </div>
 
-                    <button class="btn btn-primary w-100">
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" name="password" class="form-control" placeholder="Ingresa tu contraseña" required>
+                    </div>
+
+                    <button class="btn btn-primary w-100 mt-2">
                         Ingresar
                     </button>
+
                 </form>
+
             </div>
+
         </div>
 
+        <p class="text-center text-muted mt-3 small">
+            Sistema de Facturación © 2026
+        </p>
+
     </div>
+
 </div>
 
 {% endblock %}
