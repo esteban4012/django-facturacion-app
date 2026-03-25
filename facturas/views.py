@@ -3,6 +3,9 @@ from .models import Factura, DetalleFactura
 from .forms import FacturaForm
 from productos.models import Producto
 from django.contrib import messages
+from django.http import HttpResponse
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
 
 
 def lista_factura(request):
@@ -40,16 +43,16 @@ def agregar_producto(request, id):
 
         producto = Producto.objects.get(id=producto_id)
 
-        # 🔥 VALIDACIÓN DE STOCK
+        # VALIDACIÓN DE STOCK
         if producto.stock < cantidad:
             messages.error(request, "No hay suficiente stock")
             return redirect(f'/facturas/{id}/')
 
-        # 🔥 DESCONTAR STOCK
+        # DESCONTAR STOCK
         producto.stock -= cantidad
         producto.save()
 
-        # 🔥 CREAR DETALLE
+        # CREAR DETALLE
         DetalleFactura.objects.create(
             factura=factura,
             producto=producto,
@@ -59,3 +62,33 @@ def agregar_producto(request, id):
         messages.success(request, "Producto agregado correctamente")
 
     return redirect(f'/facturas/{id}/')
+
+
+
+def factura_pdf(request, id):
+    factura = Factura.objects.get(id=id)
+    detalles = factura.detallefactura_set.all()
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="factura_{id}.pdf"'
+
+    doc = SimpleDocTemplate(response)
+    styles = getSampleStyleSheet()
+
+    contenido = []
+
+    contenido.append(Paragraph(f"Factura #{factura.id}", styles['Title']))
+    contenido.append(Paragraph(f"Cliente: {factura.cliente.nombre}", styles['Normal']))
+    contenido.append(Paragraph(f"Fecha: {factura.fecha}", styles['Normal']))
+
+    for d in detalles:
+        contenido.append(Paragraph(
+            f"{d.producto.nombre} - {d.cantidad} x {d.producto.precio} = {d.subtotal}",
+            styles['Normal']
+        ))
+
+    contenido.append(Paragraph(f"Total: {factura.total}", styles['Title']))
+
+    doc.build(contenido)
+
+    return response

@@ -1,4 +1,4 @@
-{% if messages %}
+{% comment %} {% if messages %}
     {% for message in messages %}
         <p>{{ message }}</p>
     {% endfor %}
@@ -36,4 +36,55 @@
         {{ d.producto.nombre }} - {{ d.cantidad }} - {{ d.subtotal }}
     </li>
 {% endfor %}
-</ul>
+</ul> {% endcomment %}
+
+<h1>Factura #{{ factura.id }}</h1>
+
+<p><strong>Cliente:</strong> {{ factura.cliente.nombre }}</p>
+<p><strong>Fecha:</strong> {{ factura.fecha }}</p>
+
+<hr>
+
+<h2>Detalle</h2>
+
+<table border="1">
+    <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Subtotal</th>
+    </tr>
+
+    {% for d in detalles %}
+    <tr>
+        <td>{{ d.producto.nombre }}</td>
+        <td>{{ d.cantidad }}</td>
+        <td>{{ d.producto.precio }}</td>
+        <td>{{ d.subtotal }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Total: {{ factura.total }}</h3>
+
+<hr>
+
+<h2>Agregar producto</h2>
+
+<form method="POST" action="/facturas/{{ factura.id }}/agregar/">
+    {% csrf_token %}
+    
+    <select name="producto">
+        {% for p in productos %}
+            <option value="{{ p.id }}">{{ p.nombre }} - {{ p.precio }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="number" name="cantidad" placeholder="Cantidad" required>
+
+    <button>Agregar</button>
+</form>
+
+<br>
+
+<a href="/facturas/{{ factura.id }}/pdf/">Descargar PDF</a>
